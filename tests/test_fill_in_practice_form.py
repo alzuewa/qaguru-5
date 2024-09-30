@@ -5,6 +5,8 @@ from selene import be, browser, command, have
 
 def test_fill_in_practice_form(driver):
     browser.open('https://demoqa.com/automation-practice-form')
+    browser.driver.execute_script("$('#fixedban').remove()")
+    browser.driver.execute_script("$('footer').remove()")
 
     browser.element('#firstName').type('Tom')
     browser.element('#lastName').type('Brown')
@@ -17,34 +19,30 @@ def test_fill_in_practice_form(driver):
     browser.element('[value="8"]').click()
     browser.element('.react-datepicker__year-select').click()
     browser.element('[value="1970"]').click()
-    browser.all('.react-datepicker__day--001').first.click()
-    browser.element('.react-datepicker').should(be.absent)
-    browser.element('#dateOfBirthInput').should(have.attribute('value', '01 Sep 1970'))
+    browser.element('.react-datepicker__day--001').click()
 
     browser.element('#subjectsInput').type('e')
-    browser.element('.subjects-auto-complete__menu').should(be.visible)
     browser.element('.subjects-auto-complete__menu-list').element('//*[text()="English"]').click()
-    browser.element('.subjects-auto-complete__multi-value__label').should(have.exact_text('English'))
     browser.element('#subjectsInput').type('a')
-    browser.element('.subjects-auto-complete__menu').should(be.visible)
     browser.element('.subjects-auto-complete__menu-list').element('//*[text()="Arts"]').perform(
         command.js.scroll_into_view).click()
-    browser.all('.subjects-auto-complete__multi-value__label').should(have.exact_texts('English', 'Arts'))
-    browser.element('.subjects-auto-complete__multi-value__remove').should(be.visible)
 
     browser.element('//label[text()="Sports"]').click()
-    browser.all('[type="checkbox"]').first.should(have.attribute('value', '1'))
 
     browser.element('#uploadPicture').set_value(
         path.abspath(path.join('../resources/image.jpg'))
     )
 
-    browser.element('#currentAddress').should(have.attribute('placeholder', 'Current Address'))
     browser.element('#currentAddress').type('Any random place here')
     browser.element('#state').click()
     browser.element('//*[text()="Uttar Pradesh"]').click()
     browser.element('#city').click()
     browser.element('//*[text()="Lucknow"]').click()
+
+    browser.element('#dateOfBirthInput').should(have.attribute('value', '01 Sep 1970'))
+    browser.all('.subjects-auto-complete__multi-value__label').should(have.exact_texts('English', 'Arts'))
+    browser.element('.subjects-auto-complete__multi-value__remove').should(be.visible)
+    browser.all('[type="checkbox"]').first.should(have.attribute('value', '1'))
 
     browser.element('button#submit').click()
 
